@@ -122,9 +122,13 @@
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Cargando contenido...</p>';
       
       fetch(URL_API + "?v=buscar&q=")
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) throw new Error('Error de red');
+          return response.json();
+        })
         .then(data => mostrarResultados(data))
         .catch(error => {
+          console.error(error);
           contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:red;">Error al conectar con la base de datos.</p>';
         });
     }
@@ -135,9 +139,13 @@
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Buscando...</p>';
       
       fetch(URL_API + "?v=buscar&q=" + encodeURIComponent(termino))
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) throw new Error('Error de red');
+          return response.json();
+        })
         .then(data => mostrarResultados(data))
         .catch(error => {
+          console.error(error);
           contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:red;">Error en la búsqueda.</p>';
         });
     }
