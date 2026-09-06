@@ -105,8 +105,8 @@
   </main>
 
   <script>
-    // Pega aquí exactamente la URL de tu aplicación web de Google Apps Script (la que termina en /exec)
-    var URL_API = "https://script.googleusercontent.com/macros/echo?user_content_key=AUkAhnQ2J3Cczjk2maMZzhY_apsfC2PnHON-9uA0zxK_LCZNl_zzVNOHKUPOYJPdH-lckup9CdbGGCIDbd6IcxAFnfOwCHXPcOiEzB98eo6tfPIUqXawcaUmKlhnCzClse_HUK3krePVcxwvJE8drvjvD_z2ScVsRjriZTOdUa9bKE-98XuiC1pNp_CdpOGo_jzVfcnoQ1WRe_5xztu3lI6sxuhiYBz9YY1goz4sYiJDXfExeUp6xhH13EHKDT36d1qsAylMN7GKt33T985nwn0&lib=MJif5C1lMdhNfi_tfD6qxMCEO0RKOEkQv";
+    // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT (la que termina en /exec) entre las comillas
+    var URL_API = "PEGA_AQUÍ_TU_URL_DE_APPS_SCRIPT";
 
     window.onload = function() {
       cargarPortadaInicial();
@@ -122,7 +122,7 @@
       var contenedor = document.getElementById('portal-noticias');
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Cargando contenido...</p>';
       
-      fetch(URL_API + "?v=api&q=")
+      fetch(URL_API + "?v=buscar&q=")
         .then(response => response.json())
         .then(data => mostrarResultados(data))
         .catch(error => {
@@ -135,7 +135,7 @@
       var contenedor = document.getElementById('portal-noticias');
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Buscando...</p>';
       
-      fetch(URL_API + "?v=api&q=" + encodeURIComponent(termino))
+      fetch(URL_API + "?v=buscar&q=" + encodeURIComponent(termino))
         .then(response => response.json())
         .then(data => mostrarResultados(data))
         .catch(error => {
