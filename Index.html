@@ -727,42 +727,6 @@
         padding: 4px 7px !important;
       }
     }
-    /* =========================================================
-        MÓVILES MUY PEQUEÑOS
-    ========================================================= */
-    @media screen and (max-width: 480px) {
-      .modal-overlay {
-        padding: 5px !important;
-      }
-      .modal-box {
-        height: 96vh !important;
-        max-height: 96vh !important;
-        border-radius: 15px !important;
-      }
-      .modal-img-container {
-        height: 70% !important;
-        min-height: 70% !important;
-        max-height: 70% !important;
-        flex: 0 0 70% !important;
-      }
-      .modal-body-content {
-        height: 30% !important;
-        min-height: 30% !important;
-        max-height: 30% !important;
-        flex: 0 0 30% !important;
-        padding: 10px 14px 8px 14px !important;
-      }
-      .modal-text {
-        font-size: 11.5px !important;
-        line-height: 1.4 !important;
-      }
-      .modal-close-btn {
-        width: 38px !important;
-        height: 38px !important;
-        top: 8px !important;
-        right: 8px !important;
-      }
-    }
   </style>
 </head>
 <body>
@@ -796,8 +760,8 @@
     <div style="margin-top: 40px;">
       <div class="col-titulo" style="margin-top: 0;">Top Jugadores</div>
       <div id="widget-76ypmtq45u2a" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;background-color: #ffffff;color: #141416;border: 1px solid;border-color: #ecf1f7;overflow: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); padding: 10px;">
-        <script src="https://widgets.scoreaxis.com/api/football/team-top-players/62321b4dadaf4b2bd73df1a6?widgetId=76ypmtq45u2a&lang=es&playersCount=5&goalsBlock=1&assistsBlock=1&cardsBlock=0&links=1&noFollowLinks=0&font=roboto&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto&bodyColor=%23ffffff&textColor=%23141416&linkColor=%23141416&borderColor=%23ecf1f7&tabColor=%23f3f8fd" async></script>
-        <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="https://www.scoreaxis.com/" style="color: inherit;">Scoreaxis</a></div>
+        <script src="[https://widgets.scoreaxis.com/api/football/team-top-players/62321b4dadaf4b2bd73df1a6?widgetId=76ypmtq45u2a&lang=es&playersCount=5&goalsBlock=1&assistsBlock=1&cardsBlock=0&links=1&noFollowLinks=0&font=roboto&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto&bodyColor=%23ffffff&textColor=%23141416&linkColor=%23141416&borderColor=%23ecf1f7&tabColor=%23f3f8fd](https://widgets.scoreaxis.com/api/football/team-top-players/62321b4dadaf4b2bd73df1a6?widgetId=76ypmtq45u2a&lang=es&playersCount=5&goalsBlock=1&assistsBlock=1&cardsBlock=0&links=1&noFollowLinks=0&font=roboto&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto&bodyColor=%23ffffff&textColor=%23141416&linkColor=%23141416&borderColor=%23ecf1f7&tabColor=%23f3f8fd)" async></script>
+        <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="[https://www.scoreaxis.com/](https://www.scoreaxis.com/)" style="color: inherit;">Scoreaxis</a></div>
       </div>
     </div>
   </div>
@@ -872,9 +836,6 @@
           .buscarPublicacion(termino);
       }
     }
-    /* =====================================================
-       MOSTRAR RESULTADOS
-    ====================================================== */
     function mostrarResultados(resultados) {
       var contenedor = document.getElementById('portal-noticias');
       contenedor.innerHTML = '';
@@ -886,7 +847,6 @@
           '</p>';
         return;
       }
-      /* --- BLOQUE SUPERIOR --- */
       var htmlSuperior = '<div class="seccion-titulares">';
       var p1 = resultados[0];
       var img1Html = (p1.foto && p1.foto !== "NO_IMAGE")
@@ -905,7 +865,6 @@
             '<button class="post-link-btn" style="cursor:pointer;">Leer Análisis Completo</button>' +
           '</div>' +
         '</div>';
-      /* --- SECUNDARIOS --- */
       htmlSuperior += '<div class="columna-titulares-secundarios">';
       for (var i = 1; i <= 2; i++) {
         if (resultados[i]) {
@@ -929,7 +888,6 @@
         }
       }
       htmlSuperior += '</div>';
-      /* --- WIDGET 365SCORES --- */
       htmlSuperior +=
         '<div class="columna-widget-lateral">' +
           '<div class="widget-header-title">Clasificación LaLiga</div>' +
@@ -937,11 +895,10 @@
             '<div data-widget-type="entityStandings" data-entity-type="team" data-entity-id="174" data-lang="es-es" data-widget-id="276d4211-ac97-449e-b128-861181c3e803"></div>' +
           '</div>' +
           '<div id="powered-by" style="font-size:11px;font-family:Arial,sans-serif;text-align:center;margin-top:10px;color:var(--text-muted);">' +
-            'Provisto por <a id="powered-by-link" href="https://www.365scores.com/es" target="_blank" style="color:var(--color-rayo);text-decoration:none;font-weight:bold;">365Scores.com</a>' +
+            'Provisto por <a id="powered-by-link" href="[https://www.365scores.com/es](https://www.365scores.com/es)" target="_blank" style="color:var(--color-rayo);text-decoration:none;font-weight:bold;">365Scores.com</a>' +
           '</div>' +
         '</div>';
       htmlSuperior += '</div>';
-      /* --- ARCHIVO / FEED --- */
       var htmlInferior =
         '<div>' +
           '<div class="col-titulo">Archivo de Análisis Cronológico</div>' +
@@ -967,9 +924,8 @@
       }
       htmlInferior += '</div></div>';
       contenedor.innerHTML = htmlSuperior + htmlInferior;
-      // Forzar la carga de la librería externa del widget de 365Scores en el DOM
       var scriptWidget = document.createElement('script');
-      scriptWidget.src = 'https://widgets.365scores.com/main.js';
+      scriptWidget.src = '[https://widgets.365scores.com/main.js](https://widgets.365scores.com/main.js)';
       scriptWidget.async = true;
       document.body.appendChild(scriptWidget);
     }
