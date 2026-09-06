@@ -1,33 +1,32 @@
+// PARTE 1: El puente de Google que alimentará tu web de GitHub
 function doGet(e) {
-  if (e && e.parameter && e.parameter.v === 'alineaciones') {
-    return HtmlService.createHtmlOutputFromFile('Lineups')
-        .setTitle('Rayostats - Alineaciones')
-        .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  var ruta = (e && e.parameter && e.parameter.v) ? e.parameter.v : 'index';
+  var termino = (e && e.parameter && e.parameter.q) ? e.parameter.q : '';
+  
+  // Si la petición pide "buscar", ejecuta la lógica y devuelve JSON (lo que GitHub entiende)
+  if (ruta === 'buscar') {
+    var resultados = buscarPublicacion(termino);
+    return ContentService.createTextOutput(JSON.stringify(resultados))
+                         .setMimeType(ContentService.MimeType.JSON);
   }
-
-  if (e && e.parameter && e.parameter.v === 'widget') {
-    return HtmlService.createHtmlOutputFromFile('Widget')
-        .setTitle('Rayostats - Widget')
-        .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  }
-
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Buscador Rayostats')
+  
+  // Por si acaso entran directamente al enlace de Google, mantiene el comportamiento original
+  var archivoHtml = 'Index';
+  if (ruta === 'alineaciones') archivoHtml = 'Lineups';
+  if (ruta === 'widget') archivoHtml = 'Widget';
+  
+  return HtmlService.createHtmlOutputFromFile(archivoHtml)
+    .setTitle('Rayostats')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function procesarEstructuraTexto(texto) {
   if (!texto) return { titular: "", subtitulo: "", cuerpo: "" };
-
   var textoLimpio = texto.toString().trim();
   var lineas = textoLimpio.split("\n").map(function(l) { return l.trim(); }).filter(function(l) { return l !== ""; });
-  
   var titular = "";
   var subtitulo = "";
-
   if (lineas.length > 1) {
     titular = lineas[0];
     subtitulo = lineas[1];
@@ -36,75 +35,56 @@ function procesarEstructuraTexto(texto) {
     titular = frases[0] ? frases[0] + "." : textoLimpio;
     subtitulo = frases[1] ? frases[1] + "." : titular;
   }
-
-  return {
-    titular: titular,
-    subtitulo: subtitulo,
-    cuerpo: textoLimpio
-  };
+  return { titular: titular, subtitulo: subtitulo, cuerpo: textoLimpio };
 }
 
 function optimizarUrlImagen(urlOriginal, esPortada) {
   if (!urlOriginal) return "NO_IMAGE";
   var urlStr = urlOriginal.toString().trim();
-  if (!urlStr.startsWith("http") || urlStr.indexOf("undefined") !== -1) {
-    return "NO_IMAGE";
-  }
-  
+  if (!urlStr.startsWith("http") || urlStr.indexOf("undefined") !== -1) return "NO_IMAGE";
   var ancho = esPortada ? 1400 : 1080;
-  return 'https://wsrv.nl/?url=' + encodeURIComponent(urlStr) + '&w=' + ancho + '&q=100';
+  return 'https://wsrv.nl' + encodeURIComponent(urlStr) + '&w=' + ancho + '&q=100';
 }
 
 function buscarPublicacion(termino) {
   try {
     termino = termino ? termino.toString().trim() : "";
     var cacheKey = "busqueda_v11_" + encodeURIComponent(termino.toLowerCase());
-    
     try {
       var cache = CacheService.getScriptCache();
       var cachedData = cache.get(cacheKey);
-      if (cachedData) {
-        return JSON.parse(cachedData);
-      }
+      if (cachedData) return JSON.parse(cachedData);
     } catch (eCacheRead) {}
 
     var idHoja = "1t7oPWd7lPTBnnW41RFeOtIRJiDcpacgLKY2e55xNJsg"; 
     var ss = SpreadsheetApp.openById(idHoja);
     var sheet = ss.getSheetByName("Articulos") || ss.getSheets()[0];
-    
     var datos = sheet.getDataRange().getDisplayValues();
     if (!datos || datos.length < 2) return [];
     
     var cabecera = datos[0];
-    var colTexto = 1;        // Columna B
-    var colFotoPrincipal = 7; // Columna H
-    
+    var colTexto = 1;        
+    var colFotoPrincipal = 7; 
     var indicesFotosCarrusel = [];
     var colUrlSA = -1;
     var colFechaRY = -1;
 
     for (var c = 0; c < cabecera.length; c++) {
       var nombreCol = cabecera[c] ? cabecera[c].toString().toLowerCase().trim() : "";
-      
-      if (nombreCol.indexOf("childposts/") !== -1 && nombreCol.indexOf("displayurl") !== -1) {
-        indicesFotosCarrusel.push(c);
-      }
+      if (nombreCol.indexOf("childposts/") !== -1 && nombreCol.indexOf("displayurl") !== -1) indicesFotosCarrusel.push(c);
       if (nombreCol === 'sa') colUrlSA = c;
       if (nombreCol === 'timestamp' || nombreCol === 'ry') colFechaRY = c;
     }
 
     var listaPostsProcesados = [];
-
     for (var i = 1; i < datos.length; i++) {
       var fila = datos[i];
       if (!fila[colTexto] || fila[colTexto].toString().trim() === "") continue;
       
       var textoCompleto = fila[colTexto].toString();
       var estructura = procesarEstructuraTexto(textoCompleto);
-      
       var textoFechaISO = (colFechaRY !== -1 && fila[colFechaRY]) ? fila[colFechaRY].toString().trim() : "";
       var tiempoMilisegundos = 0;
-      
       if (textoFechaISO !== "") {
         var fechaObjeto = new Date(textoFechaISO);
         tiempoMilisegundos = !isNaN(fechaObjeto.getTime()) ? fechaObjeto.getTime() : 0;
@@ -140,7 +120,6 @@ function buscarPublicacion(termino) {
     for (var idx = 0; idx < limiteResultados; idx++) {
       var item = listaPostsProcesados[idx];
       var esTop = (idx < 3);
-      
       var galeriaFotos = [];
       var fotoMainOpt = optimizarUrlImagen(item.fotoRaw, esTop);
       if (fotoMainOpt !== "NO_IMAGE") galeriaFotos.push(fotoMainOpt);
@@ -148,9 +127,7 @@ function buscarPublicacion(termino) {
       for (var k = 0; k < indicesFotosCarrusel.length; k++) {
         var urlChild = item.filaRaw[indicesFotosCarrusel[k]] ? item.filaRaw[indicesFotosCarrusel[k]].toString().trim() : "";
         var urlChildOpt = optimizarUrlImagen(urlChild, esTop);
-        if (urlChildOpt !== "NO_IMAGE" && galeriaFotos.indexOf(urlChildOpt) === -1) {
-          galeriaFotos.push(urlChildOpt);
-        }
+        if (urlChildOpt !== "NO_IMAGE" && galeriaFotos.indexOf(urlChildOpt) === -1) galeriaFotos.push(urlChildOpt);
       }
 
       resultados.push({
@@ -167,13 +144,10 @@ function buscarPublicacion(termino) {
     try {
       var cacheWrite = CacheService.getScriptCache();
       var jsonPayload = JSON.stringify(resultados);
-      if (jsonPayload.length < 80000) { 
-        cacheWrite.put(cacheKey, jsonPayload, 600);
-      }
+      if (jsonPayload.length < 80000) cacheWrite.put(cacheKey, jsonPayload, 600);
     } catch (eCacheWrite) {}
 
     return resultados;
-    
   } catch (error) {
     return [];
   }
