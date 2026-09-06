@@ -43,7 +43,8 @@ function optimizarUrlImagen(urlOriginal, esPortada) {
   var urlStr = urlOriginal.toString().trim();
   if (!urlStr.startsWith("http") || urlStr.indexOf("undefined") !== -1) return "NO_IMAGE";
   var ancho = esPortada ? 1400 : 1080;
-  return 'https://wsrv.nl' + encodeURIComponent(urlStr) + '&w=' + ancho + '&q=100';
+  // CORREGIDO: Se añadió el '?' para que el servicio de optimización de imágenes funcione correctamente
+  return 'https://wsrv.nl/?url=' + encodeURIComponent(urlStr) + '&w=' + ancho + '&q=100';
 }
 
 function buscarPublicacion(termino) {
