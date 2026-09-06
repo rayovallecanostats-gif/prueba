@@ -105,7 +105,7 @@
   </main>
 
   <script>
-    var URL_API = "https://script.google.com/macros/s/AKfycbwi8S1DhKe34vRoKKsFef5A2yoxCPMpkDPX1eEVTxT_yzBDTxuwLC_v-hFzHFzrSV8/exec";
+    var URL_API = "https://script.google.com/macros/s/AKfycbwKcZP-Z6tqPPvgs5nfG8aAizuB6W0F9_6UwewJ4jNgUVJRyFQkeFwmaNdxTCkS3H0/exec";
 
     window.onload = function() {
       cargarPortadaInicial();
@@ -121,7 +121,7 @@
       var contenedor = document.getElementById('portal-noticias');
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Cargando contenido...</p>';
       
-      fetch(URL_API + "?v=buscar&q=")
+      fetch(URL_API + "?v=api&q=")
         .then(response => {
           if (!response.ok) throw new Error('Error de red');
           return response.json();
@@ -138,7 +138,7 @@
       var contenedor = document.getElementById('portal-noticias');
       contenedor.innerHTML = '<p style="text-align:center;grid-column: 1/-1;color:var(--text-muted);">Buscando...</p>';
       
-      fetch(URL_API + "?v=buscar&q=" + encodeURIComponent(termino))
+      fetch(URL_API + "?v=api&q=" + encodeURIComponent(termino))
         .then(response => {
           if (!response.ok) throw new Error('Error de red');
           return response.json();
